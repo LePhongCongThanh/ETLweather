@@ -9,9 +9,9 @@ import pandas as pd
 
 
 default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
-    'start_date': datetime(2023, 1, 8),
+    'owner': 'airflow', # identifier of the person or team responsible for maintaining the DAG.
+    'depends_on_past': False, # Determines whether a task in the DAG depends on the successful completion of the previous run
+    'start_date': datetime(2023, 1, 8), # Specifies the start date of the DAG.
     'email': ['myemail@domain.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -25,7 +25,7 @@ def kelvin_to_fahrenheit(temp_in_kelvin):
 
 
 def transform_load_data(task_instance):
-    data = task_instance.xcom_pull(task_ids="extract_weather_data")
+    data = task_instance.xcom_pull(task_ids="extract_weather_data") #to retrieve the output of a previous task named "extract_weather_data" 
     city = data["name"]
     weather_description = data["weather"][0]['description']
     temp_farenheit = kelvin_to_fahrenheit(data["main"]["temp"])
@@ -54,7 +54,7 @@ def transform_load_data(task_instance):
                         }
     transformed_data_list = [transformed_data]
     df_data = pd.DataFrame(transformed_data_list)
-    aws_credentials = {"key": "x", "secret": "xxx", "token": "xx"}
+    aws_credentials = {"key": "x", "secret": "x", "token": "x"} #contain the AWS access key, secret access key, and session token required to access the S3 bucket where the data will be stored.
 
     now = datetime.now()
     dt_string = now.strftime("%d%m%Y%H%M%S")
@@ -70,16 +70,16 @@ with DAG('weather_dag',
         is_weather_api_ready = HttpSensor( # waits for a specified HTTP endpoint to return a successful response before proceeding to the next task.
         task_id ='is_weather_api_ready',
         http_conn_id='weathermap_api',
-        endpoint='/data/2.5/weather?q=Portland&APPID=3fd492f3b37028d061b7981353b20e41'
+        endpoint='/data/2.5/weather?q=Portland&APPID=3fd492f3b37028d061b7981353b20e41' #: Specifies the specific API endpoint to be accessed for weather data
         )
 
         extract_weather_data = SimpleHttpOperator(
         task_id = 'extract_weather_data',
-        http_conn_id = 'weathermap_api',
+        http_conn_id = 'weathermap_api', 
         endpoint='/data/2.5/weather?q=Portland&APPID=3fd492f3b37028d061b7981353b20e41',
         method = 'GET',
-        response_filter= lambda r: json.loads(r.text),
-        log_response=True
+        response_filter= lambda r: json.loads(r.text), #converts the response text into a JSON object 
+        log_response=True #Refers to the function transform_load_data
         )
 
         transform_load_weather_data = PythonOperator(
