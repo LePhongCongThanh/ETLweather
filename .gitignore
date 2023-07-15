@@ -1,0 +1,5 @@
+venv
+.aws
+.cache
+.ssh
+.vscode-server
