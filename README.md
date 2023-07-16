@@ -1,0 +1,3 @@
+# ETLweather
+In this data engineering project, we will learn how to build and automate an ETL process that can extract current weather data from open weather map API, transform the data and load the data into an S3 bucket using Apache Airflow. Apache Airflow is an open-source platform used for orchestrating and scheduling workflows of tasks and data pipelines. This project will be entirely carried out on AWS cloud platform.
+We will cover the fundamental concepts of Apache Airflow such as DAG and Operators and I will show you how to install Apache airflow from scratch and schedule your ETL pipeline. I will also show you how to use sensor in your ETL pipeline.
